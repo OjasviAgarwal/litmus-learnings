@@ -1,0 +1,32 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: contrail-system-k8s-apiserver-chaos
+  namespace: litmus
+spec:
+  appinfo:
+    appns: 'contrail-system'
+    applabel: 'app=contrail-k8s-apiserver'
+    appkind: 'deployment'
+  annotationCheck: 'true'
+  engineState: 'active'
+  auxiliaryAppInfo: ''
+  chaosServiceAccount: litmus-admin
+  jobCleanUpPolicy: 'delete'
+  monitoring: false
+  experiments:
+    - name: pod-delete
+      spec:
+        components:
+          env:
+            # set chaos duration (in sec) as desired
+            - name: TOTAL_CHAOS_DURATION
+              value: '120'
+ 
+            # set chaos interval (in sec) as desired
+            - name: CHAOS_INTERVAL
+              value: '40'
+
+            # pod failures without '--force' & default terminationGracePeriodSeconds
+            - name: FORCE
+              value: 'false'

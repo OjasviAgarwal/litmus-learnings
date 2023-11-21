@@ -1,0 +1,37 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: contrail-cpu-chaos
+  namespace: litmus
+spec:
+  chaosType: 'app'
+  appinfo:
+    appns: 'contrail'
+    applabel: 'app=contrail-vrouter-masters'
+    appkind: 'daemonset'
+  annotationCheck: 'true'
+  engineState: 'active'
+  auxiliaryAppInfo: ''
+  chaosServiceAccount: litmus-admin
+  jobCleanUpPolicy: 'delete'
+  components:
+    runner:
+      image: "docker.io/litmuschaos/chaos-executor:1.0.0"
+      type: "go"
+  monitoring: false
+  experiments:
+    - name: pod-cpu-hog
+      spec:
+        components:
+          env:
+            # set chaos duration (in sec) as desired
+            - name: TOTAL_CHAOS_DURATION
+              value: '120'
+ 
+            # set chaos interval (in sec) as desired
+            - name: CHAOS_INTERVAL
+              value: '40'
+
+            # pod failures without '--force' & default terminationGracePeriodSeconds
+            - name: CPU_CORES
+              value: '1'

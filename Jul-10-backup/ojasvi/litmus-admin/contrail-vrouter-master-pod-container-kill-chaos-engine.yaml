@@ -1,0 +1,39 @@
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: contrail-container-chaos
+  namespace: contrail
+spec:
+  #chaosType: 'app'
+  appinfo:
+    appns: 'contrail'
+    applabel: 'app=contrail-vrouter-masters'
+    appkind: 'daemonset'
+  annotationCheck: 'true'
+  engineState: 'active'
+  auxiliaryAppInfo: ''
+  chaosServiceAccount: litmus-admin
+  jobCleanUpPolicy: 'retain'
+  #components:
+  #  runner: 
+  #    image: "docker.io/litmuschaos/chaos-executor:1.0.0"
+  #    type: "go"
+  monitoring: false
+  experiments:
+    - name: container-kill
+      spec:
+        components:
+          env:
+            # set chaos duration (in sec) as desired
+            - name: TOTAL_CHAOS_DURATION
+              value: '120'
+ 
+            # set chaos interval (in sec) as desired
+            - name: CHAOS_INTERVAL
+              value: '40'
+
+            - name: TARGET_PODS
+              value: 'contrail-vrouter-masters-rxmnx'
+
+            - name: TARGET_CONTAINER
+              value: 'contrail-vrouter-agent'
